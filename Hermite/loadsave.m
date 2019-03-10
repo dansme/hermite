@@ -87,12 +87,34 @@ intrinsic SaveOrders(file::MonStgElt, orders::[AlgAssVOrd])
     { Save a list of orders to a file.
 
       Each entry will be a tuple consisting of an order, and additional
-      metadata (class groups, ...)
+      metadata (class groups, ...). If that data has not been computed yet,
+      SaveOrders will take some time to run.
     }
 
     data := [ <SerializeOrder(O), ComputeExtraData(O)> : O in orders ];
-    Write(file, "" : Overwrite := true);
-    PrintFile(file, data);
+
+    // Format the data for each order on a single line
+    lines := [];
+    for i := 1 to #data do
+        odat := data[i];
+        line := "";
+        l := Split(Sprint(odat), "\n");
+        for j := 1 to #l do
+            line cat:= l[j];
+            if j lt #l then
+                line cat:= " ";
+            elif i lt #data then
+                line cat:= "\n";
+            end if;
+        end for;
+
+        Append(~lines,line);
+    end for;
+
+    c:= GetColumns();
+    SetColumns(0);
+    PrintFile(file, lines : Overwrite := true);
+    SetColumns(c);
 end intrinsic;
 
 intrinsic LoadOrdersPlus(file::MonStgElt) -> SeqEnum
