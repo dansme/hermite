@@ -154,3 +154,30 @@ global isomorphism classes of orders, pass the optional parameter `UpTo := "Isom
 * `load_classification.m`:
   Loads the classification of Hermite orders from a previously saved
   file.
+
+# Data format
+
+The output of the classification (`hermite.dat` and `cancellation.dat`) is formatted as
+follows.  Each file contains a Magma list of tuples `[ <O₁,e₁>, <O₂,e₂>, ... ]` where `Oᵢ`
+represents the `i`th order, and `eᵢ` contains additional metadata about the order.
+
+* `Oᵢ = [ F, a, b, [γ₁, ..., γₘ] ]` where
+  * `F = [f₀, f₁, ..., fₙ]` represents a number field given by `F≃Q[x]/(f)` with defining
+    polynomial `f=f₀ + f₁ x + ... + fₙxⁿ`. Denoting by `α` the image of `x` under this
+    isomorphism, an element of `F` is encoded as `[c₀, ..., cₙ₋₁]`, representing
+    `c = c₀ + c₁ α + ... + cₙ₋₁ αⁿ⁻¹`.
+  * `a`, `b` are elements of `F`, corresponding to parameters of the quaternion algebra `B`
+     with `i²=a`, `j²=b`, `k=ij=-ji` over `F`. Elements `γ` of `B` are then represented by
+     `[g₁,g₂,g₃,g₄]` with `γ = g₁ + g₂i + g₃j + g₄k`.
+  * `γ₁`, ..., `γₘ` are elements of `B` that are generators for the order.
+* `eᵢ = <H, G, c, P, t, h>` where
+  * `H` is the cardinality of the (right) class set.
+  * `G` is the cardinality of the stable class group.
+  * `c` is `1` if the order has locally free cancellation, and `0` if it is Hermite but
+    does not have locally free cancellation.
+  * `P` is `4`, `3`, `2`, `1`, `0`, `-1` if the order is maximal, hereditary, Eichler,
+    Bass, Gorenstein, or non-Gorenstein (that is `P` represents the most restrictive of
+    these properties applying to the order)
+  * `t` is the type number, that is, the number of isomorphism classes of orders locally
+    isomorphic to `Oᵢ`
+  * `h` is the class number of the underlying ring of integers.
