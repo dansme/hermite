@@ -183,7 +183,7 @@ intrinsic RightClassSet(O) -> SeqEnum
     return ideals;
 end intrinsic;
 
-intrinsic TypeNumber(O::AlgAssVOrd) -> Int
+intrinsic TypeNumber(O::AlgAssVOrd) -> RngInt
     { Compute type number for arbitrary order using RightClassSet }
 
     C := RightClassSet(O);
