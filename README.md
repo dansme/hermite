@@ -12,7 +12,7 @@ a ring of integers in a number field.
 
 The code accompanies the paper
 
-D. Smertnig, J. Voight, Definite orders with locally free cancellation, 2019, preprint.
+D. Smertnig, J. Voight, Definite orders with locally free cancellation, Trans. London Math. Soc. 6 (2019), no. 1, 53–86.
 
 Tested with Magma V2.24-5.
 
