@@ -119,7 +119,11 @@ intrinsic RightClassSet(O) -> SeqEnum
     A := Algebra(O);
     R := BaseRing(O);
 
-    massformula := 1/#UnitGroup(O);
+    if Type(R) eq RngInt then
+      massformula := 1/#UnitGroup(O : ModScalars := true);
+    else
+      massformula := 1/#UnitGroup(O);
+    end if;
     masses := [massformula];  // record the contribution of each ideal class to the total mass
 
     masstotal := Mass(O);
@@ -167,7 +171,11 @@ intrinsic RightClassSet(O) -> SeqEnum
                     vprintf Quaternion: "New ideal of norm %o, now found %o ideal classes\n", 
                                         Norm(Norm(I)), #ideals+1;
                     Append(~ideals, I);
-                    mass := 1/#UnitGroup(LeftOrder(I));
+                    if Type(R) eq RngInt then
+                        mass := 1/#UnitGroup(LeftOrder(I) : ModScalars := true);
+                    else
+                        mass := 1/#UnitGroup(LeftOrder(I));
+                    end if;
                     massformula +:= mass;
                     Append(~masses, mass);
                     vprintf Quaternion: "Masstotal now %o out of %o\n", massformula, masstotal;
