@@ -115,14 +115,16 @@ intrinsic RightClassSet(O) -> SeqEnum
         return O`RightClassSet;
     end if;
 
-    AvoidPrimes := { x[1] : x in Factorization(Discriminant(O)) };
     A := Algebra(O);
     R := BaseRing(O);
 
-    if Type(R) eq RngInt then
+    ReqZZ := Type(R) eq RngInt;
+    if ReqZZ then
       massformula := 1/#UnitGroup(O : ModScalars := true);
+      AvoidPrimes := { x[1]*Integers() : x in Factorization(Discriminant(O)) };
     else
       massformula := 1/#UnitGroup(O);
+      AvoidPrimes := { x[1] : x in Factorization(Discriminant(O)) };
     end if;
     masses := [massformula];  // record the contribution of each ideal class to the total mass
 
@@ -131,7 +133,7 @@ intrinsic RightClassSet(O) -> SeqEnum
         "Starting with the trivial ideal class. \nMass %o out of total mass %o\n", massformula, masstotal;
 
     ideals := [rideal<O | 1>];
-    ZbasisO := ZBasis(O);
+    ZbasisO := ReqZZ select Basis(O) else ZBasis(O);
 
     pe := 2;
     while massformula ne masstotal do
@@ -151,14 +153,20 @@ intrinsic RightClassSet(O) -> SeqEnum
             k, mk := ResidueClassField(pp);
 
             // Reduce mod p otherwise 'rideal' will choke  (Steve added this)
-            e11coords, e21coords := Explode(Coordinates( [A!e11,A!e21], ZbasisO ));
+            if ReqZZ then
+                e11coords := ChangeUniverse(Eltseq(O!A!e11), Integers());
+                e21coords := ChangeUniverse(Eltseq(O!A!e21), Integers());
+            else
+                e11coords, e21coords := Explode(Coordinates( [A!e11,A!e21], ZbasisO ));
+            end if;
 
             e11 := O! &+[ (e11coords[i] mod pe) * ZbasisO[i] : i in [1..#ZbasisO]];
             e21 := O! &+[ (e21coords[i] mod pe) * ZbasisO[i] : i in [1..#ZbasisO]];
+
             for museq in [[0,1]] cat [[1,x@@mk] : x in [x : x in k]] do
                 mu := O!(museq[1]*e11 + museq[2]*e21);
                 I := rideal<O | [mu] cat Generators(pp)>;
-                I`Norm := pp;
+                // I`Norm := pp;
 
                 found := false;
                 for jj := 1 to #ideals do
